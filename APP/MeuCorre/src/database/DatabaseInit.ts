@@ -8,12 +8,13 @@ export const DatabaseInit = () => {
       PRAGMA journal_mode = WAL;
       
       CREATE TABLE IF NOT EXISTS perfil_usuario (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        nome TEXT NOT NULL,
-        foto_uri TEXT,
-        meta_diaria REAL DEFAULT 0,
-        data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
-      );
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  nome TEXT NOT NULL,
+  senha TEXT, -- Nova coluna para a senha
+  foto_uri TEXT,
+  meta_diaria REAL DEFAULT 0,
+  data_cadastro DATETIME DEFAULT CURRENT_TIMESTAMP
+);
 
       CREATE TABLE IF NOT EXISTS veiculos (
     id INTEGER PRIMARY KEY AUTOINCREMENT,

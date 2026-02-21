@@ -9,7 +9,8 @@ import db from './src/database/DatabaseInit';
 
 // Importação das Telas
 import Cadastro from './src/screens/Cadastro';
-// import Dashboard from './src/screens/Dashboard'; // Descomente quando criar o arquivo
+import Dashboard from './src/screens/Dashboard';
+import Login from './src/screens/Login';
 
 const Stack = createStackNavigator();
 
@@ -20,10 +21,10 @@ export default function App() {
   useEffect(() => {
     async function init() {
       try {
-        // Inicializa as tabelas conforme sua documentação técnica
+        // Inicializa as tabelas
         DatabaseInit();
 
-        // Verifica se já existe perfil cadastrado
+        // Verifica se já existe perfil cadastrado para decidir a rota inicial
         const result = await db.getAllAsync<{ id: number }>(
           'SELECT id FROM perfil_usuario LIMIT 1;',
         );
@@ -58,16 +59,21 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        initialRouteName={
-          hasUser ? 'Dashboard' : 'Cadastro'
-        }
+        // Lógica de Rota Inicial:
+        // Se já existe um usuário no banco, pede Login.
+        // Se o banco está vazio, manda para o Cadastro.
+        initialRouteName={hasUser ? 'Login' : 'Cadastro'}
         screenOptions={{ headerShown: false }}
       >
+        <Stack.Screen name="Login" component={Login} />
         <Stack.Screen
           name="Cadastro"
           component={Cadastro}
         />
-        {/* <Stack.Screen name="Dashboard" component={Dashboard} /> */}
+        <Stack.Screen
+          name="Dashboard"
+          component={Dashboard}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );

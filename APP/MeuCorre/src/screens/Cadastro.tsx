@@ -23,9 +23,10 @@ import { TipoVeiculo } from '../types';
 import { cadastroStyles as styles } from '../styles/cadastroStyles';
 
 export default function Cadastro({ navigation }: any) {
-  // Estados para o nome
+  // Estados para o nome e senha
   const [pNome, setPNome] = useState<string>('');
   const [sobrenome, setSobrenome] = useState<string>('');
+  const [senha, setSenha] = useState<string>(''); // Novo estado
 
   // Estados do Veículo
   const [tipoVeiculo, setTipoVeiculo] =
@@ -33,16 +34,17 @@ export default function Cadastro({ navigation }: any) {
   const [marca, setMarca] = useState<string>('');
   const [modelo, setModelo] = useState<string>('');
   const [ano, setAno] = useState<string>('');
-  const [motor, setMotor] = useState<string>(''); // Alterado de potencia para motor
+  const [motor, setMotor] = useState<string>('');
   const [placa, setPlaca] = useState<string>('');
 
   const [erro, setErro] = useState<boolean>(false);
 
   const salvarCadastro = async () => {
-    // Validação
+    // Validação (Incluindo a senha)
     if (
       pNome.length < 2 ||
       sobrenome.length < 2 ||
+      senha.length < 4 || // Validação da senha
       !marca ||
       !modelo ||
       !placa
@@ -52,16 +54,16 @@ export default function Cadastro({ navigation }: any) {
     }
 
     try {
-      // Unifica o nome antes de salvar no banco
       const nomeCompleto = `${pNome.trim()} ${sobrenome.trim()}`;
 
-      // 1. Inserir Perfil
+      // 1. Inserir Perfil (Adicionado campo senha)
+      // Certifique-se de que a coluna 'senha' exista na sua tabela 'perfil_usuario'
       await db.runAsync(
-        'INSERT INTO perfil_usuario (nome) VALUES (?);',
-        [nomeCompleto],
+        'INSERT INTO perfil_usuario (nome, senha) VALUES (?, ?);',
+        [nomeCompleto, senha],
       );
 
-      // 2. Inserir Veículo (Salvando o estado 'motor' na coluna 'potencia' ou 'motor' do seu banco)
+      // 2. Inserir Veículo
       await db.runAsync(
         'INSERT INTO veiculos (tipo, marca, modelo, ano, motor, placa, ativo) VALUES (?, ?, ?, ?, ?, ?, 1);',
         [
@@ -75,7 +77,7 @@ export default function Cadastro({ navigation }: any) {
       );
 
       console.log('Cadastro realizado com sucesso!');
-      // navigation.replace('Dashboard');
+      navigation.replace('Dashboard');
     } catch (error) {
       console.error('Erro ao realizar cadastro:', error);
     }
@@ -150,6 +152,17 @@ export default function Cadastro({ navigation }: any) {
                   />
                 </View>
               </View>
+
+              {/* CAMPO DE SENHA ADICIONADO AQUI */}
+              <Input
+                label="Senha de Acesso"
+                placeholder="Mínimo 4 dígitos"
+                value={senha}
+                onChangeText={setSenha}
+                secureTextEntry={true} // Esconde o texto
+                keyboardType="default"
+                erro={erro && senha.length < 4}
+              />
             </View>
 
             {/* SEÇÃO: VEÍCULO */}
