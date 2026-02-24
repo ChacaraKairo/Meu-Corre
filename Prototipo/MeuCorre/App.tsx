@@ -11,6 +11,8 @@ import db from './src/database/DatabaseInit';
 import Cadastro from './src/screens/Cadastro';
 import Dashboard from './src/screens/Dashboard';
 import Login from './src/screens/Login';
+import GerenciarVeiculos from './src/screens/GerenciarVeiculos'; // Nova tela (Dev 5)
+import CadastroVeiculo from './src/screens/CadastroVeiculo';
 
 const Stack = createStackNavigator();
 
@@ -21,10 +23,10 @@ export default function App() {
   useEffect(() => {
     async function init() {
       try {
-        // Inicializa as tabelas
+        // Inicializa as tabelas conforme a documentação (perfil, veiculos, etc) [cite: 120, 251, 28, 250]
         DatabaseInit();
 
-        // Verifica se já existe perfil cadastrado para decidir a rota inicial
+        // Verifica se já existe perfil cadastrado para decidir a rota inicial [cite: 131]
         const result = await db.getAllAsync<{ id: number }>(
           'SELECT id FROM perfil_usuario LIMIT 1;',
         );
@@ -46,7 +48,7 @@ export default function App() {
       <View
         style={{
           flex: 1,
-          backgroundColor: '#121212',
+          backgroundColor: '#121212', // Padrão de alto contraste do projeto [cite: 98, 365]
           justifyContent: 'center',
           alignItems: 'center',
         }}
@@ -59,20 +61,30 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator
-        // Lógica de Rota Inicial:
-        // Se já existe um usuário no banco, pede Login.
-        // Se o banco está vazio, manda para o Cadastro.
+        // Se houver usuário, vai para Login. Se não, Onboarding de Cadastro [cite: 132]
         initialRouteName={hasUser ? 'Login' : 'Cadastro'}
         screenOptions={{ headerShown: false }}
       >
         <Stack.Screen name="Login" component={Login} />
+
         <Stack.Screen
           name="Cadastro"
           component={Cadastro}
         />
+
         <Stack.Screen
           name="Dashboard"
           component={Dashboard}
+        />
+
+        {/* Rota para o Gerenciamento de Veículos acessada pelo Header [cite: 308] */}
+        <Stack.Screen
+          name="GerenciarVeiculos"
+          component={GerenciarVeiculos}
+        />
+        <Stack.Screen
+          name="CadastroVeiculo"
+          component={CadastroVeiculo}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -14,6 +14,7 @@
     "@types/react": "~19.1.10",
     "@types/react-native": "^0.72.8",
     "expo": "~54.0.33",
+    "expo-local-authentication": "~17.0.8",
     "expo-sqlite": "~16.0.10",
     "expo-status-bar": "~3.0.9",
     "lucide-react-native": "^0.564.0",
