@@ -13,6 +13,7 @@ import Dashboard from './src/screens/Dashboard';
 import Login from './src/screens/Login';
 import GerenciarVeiculos from './src/screens/Gareagem'; // Nova tela (Dev 5)
 import CadastroVeiculo from './src/screens/CadastroVeiculo';
+import OrigemGanhos from './src/screens/OrigemGanhos';
 
 const Stack = createStackNavigator();
 
@@ -85,6 +86,10 @@ export default function App() {
         <Stack.Screen
           name="CadastroVeiculo"
           component={CadastroVeiculo}
+        />
+        <Stack.Screen
+          name="OrigemGanhos"
+          component={OrigemGanhos}
         />
       </Stack.Navigator>
     </NavigationContainer>

@@ -13,7 +13,7 @@ import {
   Pencil, // Adicionado para edição
 } from 'lucide-react-native';
 import db from '../database/DatabaseInit';
-import { cadastroStyles as styles } from '../styles/cadastroStyles';
+import { cadastroStyles as styles } from '../styles/Cadastro/cadastroStyles';
 import { SuccessModal } from '../components/alerts/SuccessModal';
 
 export default function GerenciarVeiculos({
