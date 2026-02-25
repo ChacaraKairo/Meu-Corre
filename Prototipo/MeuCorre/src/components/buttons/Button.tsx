@@ -8,7 +8,7 @@ import {
   ChevronRight,
   LucideIcon,
 } from 'lucide-react-native';
-import { buttonStyles as styles } from '../styles/buttonStyles';
+import { buttonStyles as styles } from '../../styles/buttonStyles';
 
 interface MainButtonProps extends TouchableOpacityProps {
   title: string;

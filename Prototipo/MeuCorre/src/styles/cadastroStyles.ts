@@ -3,72 +3,60 @@ import { StyleSheet, Platform } from 'react-native';
 export const cadastroStyles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212', // Fundo Dark Mode (Preto Profundo)
+    backgroundColor: '#0A0A0A', // Preto Profundo do protótipo
   },
-  // Estilo para garantir que o KeyboardAvoidingView ocupe a tela toda
   avoidingView: {
     flex: 1,
   },
   scrollContent: {
     padding: 24,
-    paddingTop: 40,
-    // Aumentamos o padding inferior para garantir que o último input
-    // fique visível acima do teclado no iOS e Android
+    paddingTop: 60,
     paddingBottom: Platform.OS === 'ios' ? 140 : 110,
   },
   header: {
     alignItems: 'center',
-    marginBottom: 32,
+    marginBottom: 40,
   },
   iconContainer: {
-    backgroundColor: '#FFD700', // Amarelo Segurança
+    backgroundColor: '#00C853', // Verde Sucesso
     padding: 20,
     borderRadius: 30,
     marginBottom: 16,
-    shadowColor: '#FFD700',
-    shadowOpacity: 0.2,
-    shadowRadius: 20,
-    elevation: 10,
+    shadowColor: '#00C853',
+    shadowOpacity: 0.4,
+    shadowRadius: 15,
+    elevation: 8,
   },
   titulo: {
-    color: '#FFF',
-    fontSize: 24,
+    color: '#00C853',
+    fontSize: 28,
     fontWeight: '900',
-    letterSpacing: -1,
-  },
-  subtitulo: {
-    color: '#888',
-    fontSize: 14,
-    marginTop: 4,
-  },
-  card: {
-    backgroundColor: '#1E1E1E',
-    padding: 20,
-    borderRadius: 28, // Bordas arredondadas conforme Guia UX
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: '#252525',
-  },
-  sectionTitle: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginBottom: 16,
-  },
-  labelSecao: {
-    color: '#888',
-    fontSize: 10,
-    fontWeight: 'bold',
-    letterSpacing: 2,
+    letterSpacing: -1.5,
     textTransform: 'uppercase',
   },
-  footer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
+  subtitulo: {
+    color: '#666',
+    fontSize: 14,
+    marginTop: 4,
+    textAlign: 'center',
+  },
+  card: {
+    backgroundColor: '#161616', // Cinza muito escuro para contraste
     padding: 24,
-    // Fundo semi-transparente para dar profundidade ao botão fixo
-    backgroundColor: 'rgba(18, 18, 18, 0.9)',
+    borderRadius: 28,
+    borderWidth: 1,
+    borderColor: '#222',
+    shadowColor: '#000',
+    shadowOpacity: 0.5,
+    shadowRadius: 10,
+    elevation: 5,
+  },
+  labelSecao: {
+    color: '#666',
+    fontSize: 10,
+    fontWeight: '900',
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
+    marginBottom: 20,
   },
 });

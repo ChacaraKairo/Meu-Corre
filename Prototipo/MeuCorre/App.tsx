@@ -11,7 +11,7 @@ import db from './src/database/DatabaseInit';
 import Cadastro from './src/screens/Cadastro';
 import Dashboard from './src/screens/Dashboard';
 import Login from './src/screens/Login';
-import GerenciarVeiculos from './src/screens/GerenciarVeiculos'; // Nova tela (Dev 5)
+import GerenciarVeiculos from './src/screens/Gareagem'; // Nova tela (Dev 5)
 import CadastroVeiculo from './src/screens/CadastroVeiculo';
 
 const Stack = createStackNavigator();

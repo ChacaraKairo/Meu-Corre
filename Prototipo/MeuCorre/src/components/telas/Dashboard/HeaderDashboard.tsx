@@ -5,7 +5,7 @@ import {
   Car,
   ChevronRight,
 } from 'lucide-react-native';
-import { dashboardStyles as styles } from '../../styles/dashboardStyles';
+import { dashboardStyles as styles } from '../../../styles/dashboardStyles';
 import { useNavigation } from '@react-navigation/native';
 
 interface Props {

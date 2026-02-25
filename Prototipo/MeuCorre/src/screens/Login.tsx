@@ -1,36 +1,58 @@
-import React, { useState, useEffect } from 'react';
+// Arquivo: src/screens/Login.tsx
+// Tela Principal de Login com lógica de verificação estrita
+
+import React, { useState, useEffect, useRef } from 'react';
 import {
   View,
-  Text,
   KeyboardAvoidingView,
   Platform,
   TouchableWithoutFeedback,
   Keyboard,
-  Alert,
-  TouchableOpacity,
+  ScrollView,
+  Animated,
 } from 'react-native';
-import {
-  Lock,
-  User,
-  Fingerprint,
-} from 'lucide-react-native';
 import * as LocalAuthentication from 'expo-local-authentication';
 
 import db from '../database/DatabaseInit';
-import { Input } from '../components/Input';
-import { MainButton } from '../components/Button';
-import { cadastroStyles as styles } from '../styles/cadastroStyles';
+import { loginStyles as styles } from '../styles/Login/LoginStyles';
 
-export default function Login({ navigation }: any) {
-  const [nome, setNome] = useState('');
-  const [senha, setSenha] = useState('');
-  const [carregando, setCarregando] = useState(false);
+// Importação dos componentes modulares
+import { HeaderLogin } from '../components/telas/Login/HeaderLogin';
+import { CardLogin } from '../components/telas/Login/CardLogin';
+import { FooterLogin } from '../components/telas/Login/FooterLogin';
+
+const Login: React.FC<any> = ({ navigation }) => {
+  const [nome, setNome] = useState<string>('');
+  const [senha, setSenha] = useState<string>('');
+  const [carregando, setCarregando] =
+    useState<boolean>(false);
+  const [erro, setErro] = useState<string>('');
   const [biometriaDisponivel, setBiometriaDisponivel] =
-    useState(false);
+    useState<boolean>(false);
+
+  const bounceAnim = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
     checkDeviceForHardware();
+    startBounce();
   }, []);
+
+  const startBounce = () => {
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(bounceAnim, {
+          toValue: -10,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(bounceAnim, {
+          toValue: 0,
+          duration: 2000,
+          useNativeDriver: true,
+        }),
+      ]),
+    ).start();
+  };
 
   const checkDeviceForHardware = async () => {
     const compatible =
@@ -41,45 +63,60 @@ export default function Login({ navigation }: any) {
   };
 
   const realizarLoginBiometrico = async () => {
-    const result =
-      await LocalAuthentication.authenticateAsync({
-        promptMessage: 'Acesse o MeuCorre com sua digital',
-        fallbackLabel: 'Usar senha',
-      });
+    try {
+      const result =
+        await LocalAuthentication.authenticateAsync({
+          promptMessage:
+            'Aceda ao MeuCorre com a sua biometria',
+          fallbackLabel: 'Utilizar senha',
+          disableDeviceFallback: false,
+        });
 
-    if (result.success) {
-      // Como o banco é local e o usuário já se cadastrou antes,
-      // a digital libera o acesso direto ao Dashboard.
-      navigation.replace('Dashboard');
+      if (result.success) {
+        // Na biometria local, assumimos que o utilizador é o dono do dispositivo
+        // e que já existe um perfil registado na base de dados.
+        navigation.replace('Dashboard');
+      }
+    } catch (e) {
+      console.error('Erro na biometria:', e);
     }
   };
 
   const realizarLoginManual = async () => {
-    if (!nome || !senha) {
-      Alert.alert(
-        'Erro',
-        'Preencha todos os campos para entrar.',
-      );
+    setErro('');
+
+    // 1. Tratamento e validação inicial
+    const nomeLimpo = nome.trim();
+    const senhaLimpa = senha; // Normalmente não fazemos trim em senhas, pois espaços podem fazer parte delas
+
+    if (!nomeLimpo || !senhaLimpa) {
+      setErro('Introduza o nome e a senha para entrar.');
       return;
     }
 
     setCarregando(true);
+
     try {
+      // 2. Consulta estrita (Utilizando = em vez de LIKE)
+      // Isso garante que o nome tem de ser exatamente igual ao registado
       const usuario: any = await db.getFirstAsync(
-        'SELECT * FROM perfil_usuario WHERE nome LIKE ? AND senha = ?',
-        [`%${nome.trim()}%`, senha],
+        'SELECT * FROM perfil_usuario WHERE nome = ? AND senha = ?',
+        [nomeLimpo, senhaLimpa],
       );
 
+      // 3. Verificação do resultado
       if (usuario) {
+        console.log(
+          '[LOGIN] Sucesso para o utilizador:',
+          usuario.nome,
+        );
         navigation.replace('Dashboard');
       } else {
-        Alert.alert('Ops!', 'Usuário ou senha incorretos.');
+        setErro('Utilizador ou senha incorretos.');
       }
     } catch (error) {
-      Alert.alert(
-        'Erro',
-        'Falha ao conectar com o banco de dados.',
-      );
+      console.error('[ERRO LOGIN]', error);
+      setErro('Erro ao aceder à base de dados local.');
     } finally {
       setCarregando(false);
     }
@@ -91,110 +128,38 @@ export default function Login({ navigation }: any) {
         behavior={
           Platform.OS === 'ios' ? 'padding' : 'height'
         }
-        style={{ flex: 1, justifyContent: 'center' }}
+        style={{ flex: 1 }}
       >
         <TouchableWithoutFeedback
           onPress={Keyboard.dismiss}
         >
-          <View style={styles.scrollContent}>
-            <View style={styles.header}>
-              <View style={styles.iconContainer}>
-                <Lock
-                  size={48}
-                  color="#121212"
-                  strokeWidth={2.5}
-                />
-              </View>
-              <Text style={styles.titulo}>MEUCORRE</Text>
-              <Text style={styles.subtitulo}>
-                Acesse sua conta para continuar.
-              </Text>
-            </View>
+          <ScrollView
+            contentContainerStyle={styles.scrollContent}
+            showsVerticalScrollIndicator={false}
+          >
+            <HeaderLogin bounceAnim={bounceAnim} />
 
-            <View style={styles.card}>
-              <View style={styles.sectionTitle}>
-                <User size={16} color="#888" />
-                <Text style={styles.labelSecao}>LOGIN</Text>
-              </View>
+            <CardLogin
+              nome={nome}
+              setNome={setNome}
+              senha={senha}
+              setSenha={setSenha}
+              erro={erro}
+              carregando={carregando}
+              biometriaDisponivel={biometriaDisponivel}
+              onLogin={realizarLoginManual}
+              onBiometria={realizarLoginBiometrico}
+              onNavigateCadastro={() =>
+                navigation.navigate('Cadastro')
+              }
+            />
 
-              <Input
-                label="Nome de Usuário"
-                placeholder="Ex: João Silva"
-                value={nome}
-                onChangeText={setNome}
-                autoCapitalize="words"
-              />
-
-              <Input
-                label="Senha"
-                placeholder="Digite sua senha"
-                value={senha}
-                onChangeText={setSenha}
-                secureTextEntry
-              />
-
-              <View
-                style={{
-                  flexDirection: 'row',
-                  alignItems: 'center',
-                  marginTop: 15,
-                  gap: 10,
-                }}
-              >
-                <View style={{ flex: 1 }}>
-                  <MainButton
-                    title={carregando ? '...' : 'ENTRAR'}
-                    onPress={realizarLoginManual}
-                  />
-                </View>
-
-                {biometriaDisponivel && (
-                  <TouchableOpacity
-                    onPress={realizarLoginBiometrico}
-                    style={{
-                      backgroundColor: '#FFD700', // Amarelo Segurança do projeto
-                      padding: 15,
-                      borderRadius: 12,
-                      justifyContent: 'center',
-                      alignItems: 'center',
-                      height: 56, // Mesma altura do seu botão padrão
-                    }}
-                  >
-                    <Fingerprint
-                      size={28}
-                      color="#121212"
-                    />
-                  </TouchableOpacity>
-                )}
-              </View>
-
-              <TouchableOpacity
-                onPress={() =>
-                  navigation.navigate('Cadastro')
-                }
-                style={{
-                  marginTop: 20,
-                  alignSelf: 'center',
-                }}
-              >
-                <Text
-                  style={{ color: '#888', fontSize: 14 }}
-                >
-                  Ainda não tem conta?{' '}
-                  <Text
-                    style={{
-                      fontWeight: 'bold',
-                      color: '#121212',
-                    }}
-                  >
-                    Cadastre-se
-                  </Text>
-                </Text>
-              </TouchableOpacity>
-            </View>
-          </View>
+            <FooterLogin />
+          </ScrollView>
         </TouchableWithoutFeedback>
       </KeyboardAvoidingView>
     </View>
   );
-}
+};
+
+export default Login;

@@ -1,6 +1,6 @@
 import React from 'react';
 import { View, Text } from 'react-native';
-import { dashboardStyles as styles } from '../../styles/dashboardStyles';
+import { dashboardStyles as styles } from '../../../styles/dashboardStyles';
 
 interface Movimentacao {
   id: number;

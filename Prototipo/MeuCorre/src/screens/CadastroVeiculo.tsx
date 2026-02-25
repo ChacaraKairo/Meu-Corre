@@ -10,9 +10,9 @@ import {
 import { Bike, Car, Save } from 'lucide-react-native';
 
 import db from '../database/DatabaseInit';
-import { Input } from '../components/Input';
-import { VeiculoSelector } from '../components/VeiculoSelector';
-import { MainButton } from '../components/Button';
+import { Input } from '../components/inputs/Input';
+import { VeiculoSelector } from '../components/telas/Cadastro/VeiculoSelector';
+import { MainButton } from '../components/buttons/Button';
 import { TipoVeiculo } from '../types';
 import { cadastroStyles as styles } from '../styles/cadastroStyles';
 

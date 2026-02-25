@@ -14,7 +14,7 @@ import {
 } from 'lucide-react-native';
 import db from '../database/DatabaseInit';
 import { cadastroStyles as styles } from '../styles/cadastroStyles';
-import { SuccessModal } from '../components/SuccessModal';
+import { SuccessModal } from '../components/alerts/SuccessModal';
 
 export default function GerenciarVeiculos({
   navigation,

@@ -19,10 +19,10 @@ import {
 import db from '../database/DatabaseInit';
 import { dashboardStyles as styles } from '../styles/dashboardStyles';
 
-import { HeaderDashboard } from '../components/Dashboard/HeaderDashboard';
-import { FinanceCard } from '../components/Dashboard/FinanceCard';
-import { UltimasMovimentacoes } from '../components/Dashboard/UltimasMovimentacoes';
-import { AlertaManutencao } from '../components/Dashboard/AlertaManutencao';
+import { HeaderDashboard } from '../components/telas/Dashboard/HeaderDashboard';
+import { FinanceCard } from '../components/telas/Dashboard/FinanceCard';
+import { UltimasMovimentacoes } from '../components/telas/Dashboard/UltimasMovimentacoes';
+import { AlertaManutencao } from '../components/telas/Dashboard/AlertaManutencao';
 
 export default function Dashboard() {
   const [loading, setLoading] = useState(true);
